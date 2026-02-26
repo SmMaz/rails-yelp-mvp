@@ -1,14 +1,18 @@
 Rails.application.routes.draw do
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  # Ziyaretçilerin yapabileceği eylemler:
+  # 1. Tüm restoranları listele (index)
+  # 2. Yeni restoran ekleme formunu gör (new)
+  # 3. Yeni restoranı kaydet (create)
+  # 4. Restoran detayını ve yorumlarını gör (show)
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
-  get "up" => "rails/health#show", as: :rails_health_check
-
-  # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
-
-  # Defines the root path route ("/")
-  # root "posts#index"
+  resources :restaurants, only: [ :index, :show, :new, :create ] do
+    # Yorumlar restoranlara bağlı olduğu için iç içe (nested) yazıyoruz
+    resources :reviews, only: [ :create ]
+  end
+end
+Rails.application.routes.draw do
+  resources :restaurants, only: [ :index, :show, :new, :create ] do
+    # :new rotasını buraya ekliyoruz
+    resources :reviews, only: [ :new, :create ]
+  end
 end
